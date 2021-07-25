@@ -2,7 +2,7 @@ const { json } = require('express')
 const { hash, compare } = require('../utils/tools')
 const userModel = require('../models/users')
 const e = require('express')
-const randomstring = require("randomstring")
+const randomstring = require("randomstring")  
 
 //注册用户
 const signup =  async(req, res, next) => {
