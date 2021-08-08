@@ -1,6 +1,8 @@
 const { json } = require('express')
-const { hash, compare } = require('../utils/tools')
+const { hash, compare, sign, verify  } = require('../utils/tools')
 const userModel = require('../models/users')
+
+
 const e = require('express')
 const randomstring = require("randomstring")
 
@@ -10,6 +12,7 @@ const signup =  async(req, res, next) => {
     res.set('content-type','application/json;charset=utf-8')
 
     const { username, password } = req.body
+  
     //密码加密
     const bcrypthPassword = await hash(password)
     //判断用户是否存在
@@ -49,12 +52,17 @@ const signin = async (req, res) => {
     if (result) {
         let { password: hash } = result
         let compareResult = await compare(password, hash)
+        console.log(1);
         if (compareResult) {
-            req.session.username = username
+           
+            // req.session.username = username
             // const sessionId = randomstring.generate()
             // res.set('Set-Cookie', `sessionId=${sessionId}; Path=/; HttpOnly`)
-            // console.log('sessionId--',sessionId);
-
+            // console.log(username);
+            const token = sign(username)
+            console.log(token)
+            //自定义守护字段开头以x
+            res.set('X-Access-Token', token)
             res.render('success', {
                 data: JSON.stringify({
                     message: '登录成功',
@@ -126,19 +134,37 @@ const remove = async (req, res, next) => {
 
 //权鉴
 const isAuth = async (req, res) => {
-    if (req.session.username) {
+    let token = req.get('X-Access-Token')
+    console.log(req);
+    try {
+        let result = verify(token)
         res.render('success', {
             data: JSON.stringify({
-                username: req.session.username
+                username: req.username
             })
         })
-    } else {
+    } catch (error) {
         res.render('fail', {
             data: JSON.stringify({
                 message: '请登录'
             })
         })
     }
+
+    //session判断方式
+    // if (req.session.username) {
+    //     res.render('success', {
+    //         data: JSON.stringify({
+    //             username: req.session.username
+    //         })
+    //     })
+    // } else {
+    //     res.render('fail', {
+    //         data: JSON.stringify({
+    //             message: '请登录'
+    //         })
+    //     })
+    // }
 }
 exports.signup = signup
 exports.signin = signin

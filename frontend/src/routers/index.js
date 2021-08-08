@@ -12,8 +12,10 @@ router.use((req) => {
     $.ajax({
         url: '/api/users/isAuth',
         dataType:'json',
+        headers: {
+            'X-Access-Token': localStorage.getItem('node-token') || ''
+        },
         success(res) {
-        
             if (res.ret) {
                 router.go('/index')
             } else {
