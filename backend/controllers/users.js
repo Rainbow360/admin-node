@@ -105,7 +105,6 @@ const signout = async (req, res) => {
 const list = async (req, res) => {
 
     res.set('content-type','application/json;charset=utf-8')
-
     const listResult = await userModel.findList()
     res.render('success', {
         data: JSON.stringify(listResult)

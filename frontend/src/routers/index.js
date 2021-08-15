@@ -2,29 +2,20 @@ import SMERouter from 'sme-router'
 
 const router = new SMERouter('root')
 
-import index from '../controllers/index'
-
+import index from '../controllers/users/index'
 import signin from '../controllers/signin'
 
+import { auth as authModel } from '../models/auth'
+
 //路由守卫
-router.use((req) => {
+router.use(async (req) => {
     //第一个打开的页面
-    $.ajax({
-        url: '/api/users/isAuth',
-        dataType:'json',
-        headers: {
-            'X-Access-Token': localStorage.getItem('node-token') || ''
-        },
-        success(res) {
-            if (res.ret) {
-                router.go('/index')
-            } else {
-                router.go('/signin')
-            }
-            
-        }
-        
-    })
+    let result = await authModel()
+    if (result.ret) {
+        router.go('/index')
+    } else {
+        router.go('/signin')
+    }
 })
 
 router.route('/', () => {})
