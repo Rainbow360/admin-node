@@ -1,13 +1,13 @@
-export const auth = () => {
-    return $.ajax({
-        url: '/api/users/isAuth',
-        dataType:'json',
-        headers: {
-            'X-Access-Token': localStorage.getItem('node-token') || ''
-        },
-        success(res) {
-            return res
-        }
-    })
+import http from '../utils/http'
+export const auth = async () => {
+    try {
+        let { result } = await http({
+            url: '/api/users/isAuth'
+        })
+        console.log(result);
+        return result
+    } catch (error) {
+        console.log(error);
+    }
 }
 

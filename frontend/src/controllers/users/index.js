@@ -41,7 +41,7 @@ const _loadData = async () => {
 const _methods = () => {
      //删除事件绑定
      $('#users-list').on('click', '.remove' ,async function() {
-        let result = JSON.parse(await usersRemoveModel($(this).data('id')))
+        let result = await usersRemoveModel($(this).data('id'))
      
         if (result.ret) {
             _loadData()
